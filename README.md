@@ -29,10 +29,10 @@ Vagrant.configure("2") do |config|
     # type => String || Array<String> || Hash
     k3s.env = %w[K3S_KUBECONFIG_MODE=0640 K3S_SELINUX=true]
     # or
-    k3s.env = {
+    k3s.env = ENV.select{|k| k.start_with?('K3S_') || k.start_with?('INSTALL_K3S_')}.merge({
       :K3S_KUBECONFIG_MODE => '0640', # pass this as a string unless you like weird results in your guest ...
       :K3S_SELINUX => true,
-    }
+    })
     # or
     k3s.env = <<~ENV
       K3S_KUBECONFIG_MODE=0640
