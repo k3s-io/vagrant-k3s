@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+ENV['VAGRANT_I_KNOW_WHAT_IM_DOING_PLEASE_BE_QUIET'] = 'true'
+ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'virtualbox'
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "centos/stream8"
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+
+  config.vm.provider :docker do |docker,override|
+    docker.image = "centos:8"
+    override.vm.box = nil
+  end
+
+  %w[hyperv libvirt virtualbox vmware_desktop].each do |p|
+    config.vm.provider p do |v|
+      v.cpus = ENV['CPUS'] || 2
+      v.memory = ENV['MEMORY'] || 2048
+    end
+  end
+  config.vm.provider :virtualbox do |v|
+    v.gui = false
+    v.check_guest_additions = false
+  end
+  config.vm.provider :vmware_desktop do |v|
+    v.gui = false
+  end
+
+  config.vm.provision :k3s do |k3s|
+    # k3s.installer_url = "https://raw.githubusercontent.com/k3s-io/k3s/master/install.sh"
+    k3s.args = %w[server --token=vagrant]
+    # k3s.env = <<~ENV
+    #   K3S_KUBECONFIG_MODE=0644
+    #   K3S_SELINUX=false
+    # ENV
+    k3s.env = %w[K3S_KUBECONFIG_MODE=0666 K3S_SELINUX=true]
+    # k3s.config = <<~YAML
+    #   disable:
+    #   - local-storage
+    # YAML
+    # k3s.env = {
+    #   :K3S_KUBECONFIG_MODE => '0644',
+    #   :K3S_SELINUX => true,
+    # }
+    k3s.config = {
+      :disable => %w[local-storage servicelb]
+    }
+  end
+
+end
