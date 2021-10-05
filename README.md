@@ -12,7 +12,8 @@ vagrant up --provider=<your favorite provider>
 ```ruby
 Vagrant.configure("2") do |config|
   config.vm.box = "centos/stream8"
-  config.vm.provision :k3s do |k3s|
+  config.vm.provision :shell, run: "once", inline: 'yum install -y https://github.com/k3s-io/k3s-selinux/releases/download/v0.4-rc1.testing.1/k3s-selinux-0.4.rc1-1.el8.noarch.rpm'
+  config.vm.provision :k3s, run: "once" do |k3s|
     # installer_url: can be anything that curl can access from the guest
     # default =>`https://get.k3s.io`
     # type => String

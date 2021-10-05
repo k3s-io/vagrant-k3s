@@ -38,10 +38,31 @@ GEM
     childprocess (4.1.0)
     concurrent-ruby (1.1.9)
     diff-lcs (1.4.4)
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
     ed25519 (1.2.4)
     erubi (1.10.0)
     excon (0.86.0)
     ffi (1.15.4)
+    fog-core (2.2.4)
+      builder
+      excon (~> 0.71)
+      formatador (~> 0.2)
+      mime-types
+    fog-json (1.2.0)
+      fog-core
+      multi_json (~> 1.10)
+    fog-libvirt (0.9.0)
+      fog-core (>= 1.27.4)
+      fog-json
+      fog-xml (~> 0.1.1)
+      json
+      ruby-libvirt (>= 0.7.0)
+    fog-xml (0.1.4)
+      fog-core
+      nokogiri (>= 1.5.11, < 2.0.0)
+    formatador (0.3.0)
     gssapi (1.3.1)
       ffi (>= 1.0.1)
     gyoku (1.3.1)
@@ -50,6 +71,7 @@ GEM
     httpclient (2.8.3)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    json (2.5.1)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -67,7 +89,10 @@ GEM
     net-sftp (3.0.0)
       net-ssh (>= 5.0.0, < 7.0.0)
     net-ssh (6.1.0)
+    nokogiri (1.12.5-x86_64-linux)
+      racc (~> 1.4)
     nori (2.6.0)
+    racc (1.5.2)
     rake (13.0.6)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
@@ -88,8 +113,19 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
+    ruby-libvirt (0.7.1)
     rubyntlm (0.6.3)
     rubyzip (2.3.2)
+    vagrant-env (0.0.3)
+      dotenv (~> 0.9)
+    vagrant-libvirt (0.5.3)
+      fog-core (~> 2.1)
+      fog-libvirt (>= 0.6.0)
+      nokogiri (~> 1.6)
+      rexml
+    vagrant-reload (0.0.1)
+    vagrant-timezone (1.3.0)
+    vagrant-vmware-desktop (3.0.1)
     vagrant_cloud (3.0.5)
       excon (~> 0.73)
       log4r (~> 1.1.10)
@@ -121,7 +157,12 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec (~> 3.10.0)
   vagrant!
+  vagrant-env
   vagrant-k3s!
+  vagrant-libvirt
+  vagrant-reload
+  vagrant-timezone
+  vagrant-vmware-desktop
 
 BUNDLED WITH
    2.2.27
