@@ -131,7 +131,7 @@ module VagrantPlugins
           tmpdir = @machine.guest.capability :create_tmp_path, {:type => :directory}
           tmpfile = [tmpdir, File.basename(to)].join('/')
           @machine.communicate.upload(from, tmpfile)
-          @machine.communicate.sudo("mv -f #{tmpfile} #{to}")
+          @machine.communicate.sudo("mkdir -p #{File.dirname(to)} && mv -f #{tmpfile} #{to}")
         end
         to
       end

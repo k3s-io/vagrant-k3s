@@ -28,7 +28,7 @@ GIT
 PATH
   remote: .
   specs:
-    vagrant-k3s (0.1.0)
+    vagrant-k3s (0.1.1)
 
 GEM
   remote: https://rubygems.org/
