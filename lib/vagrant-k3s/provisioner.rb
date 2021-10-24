@@ -29,12 +29,12 @@ module VagrantPlugins
           args = " #{args.join(" ")}"
         end
 
-        @machine.ui.info 'Ensuring cURL ...'
+        @machine.ui.info 'Installing K3s ...'
+
         unless @machine.guest.capability(:curl_installed)
           @machine.guest.capability(:curl_install)
         end
 
-        @machine.ui.info 'Installing K3s ...'
         config_file = config.config_path.to_s
         config_yaml = config.config.is_a?(String) ? config.config : stringify_keys(config.config).to_yaml
         with_file_upload "k3s-config.yaml".freeze, config_file, config_yaml
@@ -56,8 +56,11 @@ module VagrantPlugins
         with_file_upload "k3s-install.sh", install_sh, <<~EOF
           #/usr/bin/env bash
           set -eu -o pipefail
-          mkdir -p $(dirname #{config.config_path}) $(dirname #{config.env_path})
-          chown  root:root #{config.config_path} #{config.env_path}
+          mkdir -m 0755 -p $(dirname #{config.config_path}) $(dirname #{config.env_path})
+          chown #{config.config_owner} #{config.config_path}
+          chmod #{config.config_mode} #{config.config_path}
+          chown #{config.env_owner} #{config.env_path}
+          chmod #{config.env_mode} #{config.env_path}
           set -o allexport
           source #{config.env_path}
           set +o allexport
@@ -70,12 +73,10 @@ module VagrantPlugins
           outputs.values.map(&:close)
         end
 
-        @machine.guest.capability(:k3s_installed)
-
         begin
           exe = "k3s"
           @machine.ui.info 'Checking the K3s version ...'
-          @machine.communicate.execute("/usr/bin/which k3s", :error_key => :ssh_bad_exit_status_muted) do |type, data|
+          @machine.communicate.execute("which k3s", :error_key => :ssh_bad_exit_status_muted) do |type, data|
             exe = data.chomp if type == :stdout
           end
         rescue Vagrant::Errors::VagrantError => e
@@ -131,7 +132,7 @@ module VagrantPlugins
           tmpdir = @machine.guest.capability :create_tmp_path, {:type => :directory}
           tmpfile = [tmpdir, File.basename(to)].join('/')
           @machine.communicate.upload(from, tmpfile)
-          @machine.communicate.sudo("mkdir -p #{File.dirname(to)} && mv -f #{tmpfile} #{to}")
+          @machine.communicate.sudo("mkdir -m 0755 -p #{File.dirname(to)} && mv -f #{tmpfile} #{to}")
         end
         to
       end

@@ -5,43 +5,42 @@ ENV['VAGRANT_I_KNOW_WHAT_IM_DOING_PLEASE_BE_QUIET'] = 'true'
 ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'virtualbox'
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "centos/stream8"
+  # the vm.define mullet: business up front, party in the back (below)
+  config.vm.define 'vagrant-k3s-test', primary: true do |node|
+    node.vm.box = 'dweomer/centos-8.4-amd64'
+    node.vm.hostname = 'vagrant'
+    node.vm.provision :k3s, run: "once" do |k3s|
+      k3s.args = %w[server --selinux]
+      k3s.env = %w[
+        INSTALL_K3S_CHANNEL=stable
+        INSTALL_K3S_NAME=server
+        K3S_KUBECONFIG_MODE=0644
+        K3S_TOKEN=vagrant-k3s-test
+      ]
+      k3s.config_mode = '0644' # side-step https://github.com/k3s-io/k3s/issues/4321
+      k3s.config = {
+        :disable => %w[local-storage metrics-server servicelb traefik],
+        'disable-network-policy' => true,
+      }
+    end
+  end
+
+  # turn off this noise, we don't need it
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
   %w[hyperv libvirt virtualbox vmware_desktop].each do |p|
     config.vm.provider p do |v|
-      v.cpus = ENV['CPUS'] || 2
-      v.memory = ENV['MEMORY'] || 2048
+      v.cpus = ENV['CPUS'] || 2         # k3s behaves much better with 2 cpu
+      v.memory = ENV['MEMORY'] || 2048  # the memory helps dnf/yum evade the oom-killer sans swap
     end
   end
+
   config.vm.provider :virtualbox do |v|
     v.gui = false
     v.check_guest_additions = false
   end
   config.vm.provider :vmware_desktop do |v|
     v.gui = false
-  end
-
-  config.vm.provision :shell, run: "once", inline: 'yum install -y https://github.com/k3s-io/k3s-selinux/releases/download/v0.4-rc1.testing.1/k3s-selinux-0.4.rc1-1.el8.noarch.rpm'
-  config.vm.provision :k3s, run: "once" do |k3s|
-    # k3s.installer_url = "https://raw.githubusercontent.com/k3s-io/k3s/master/install.sh"
-    k3s.args = %w[server --token=vagrant]
-    # k3s.env = <<~ENV
-    #   K3S_KUBECONFIG_MODE=0644
-    #   K3S_SELINUX=false
-    # ENV
-    k3s.env = %w[K3S_KUBECONFIG_MODE=0666 K3S_SELINUX=true]
-    # k3s.config = <<~YAML
-    #   disable:
-    #   - local-storage
-    # YAML
-    # k3s.env = {
-    #   :K3S_KUBECONFIG_MODE => '0644',
-    #   :K3S_SELINUX => true,
-    # }
-    k3s.config = {
-      :disable => %w[local-storage servicelb]
-    }
   end
 
 end

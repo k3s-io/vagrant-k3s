@@ -3,7 +3,11 @@
 module VagrantPlugins
   module K3s
     class Config < Vagrant.plugin(2, :config)
-      DEFAULT_CONFIG_PATH = "/etc/rancher/k3s/conf.yaml".freeze
+      DEFAULT_CONFIG_MODE = "0600".freeze
+      DEFAULT_CONFIG_OWNER = "root:root".freeze
+      DEFAULT_CONFIG_PATH = "/etc/rancher/k3s/config.yaml".freeze
+      DEFAULT_ENV_MODE = "0600".freeze
+      DEFAULT_ENV_OWNER = "root:root".freeze
       DEFAULT_ENV_PATH = "/etc/rancher/k3s/install.env".freeze
       DEFAULT_INSTALLER_URL = "https://get.k3s.io".freeze
 
@@ -15,13 +19,29 @@ module VagrantPlugins
       # @return [Hash]
       attr_accessor :config
 
-      # Defaults to `/etc/rancher/k3s/conf.yaml`
+      # Defaults to `0600`
+      # @return [String]
+      attr_accessor :config_mode
+
+      # Defaults to `root:root`
+      # @return [String]
+      attr_accessor :config_owner
+
+      # Defaults to `/etc/rancher/k3s/config.yaml`
       # @return [String]
       attr_accessor :config_path
 
       # string (.env), array, or hash
       # @return [Array<String>]
       attr_accessor :env
+
+      # Defaults to `0600`
+      # @return [String]
+      attr_accessor :env_mode
+
+      # Defaults to `root:root`
+      # @return [String]
+      attr_accessor :env_owner
 
       # Defaults to `/etc/rancher/k3s/install.env`
       # @return [String]
@@ -74,8 +94,12 @@ module VagrantPlugins
       def initialize
         @args = UNSET_VALUE
         @config = UNSET_VALUE
+        @config_mode = UNSET_VALUE
+        @config_owner = UNSET_VALUE
         @config_path = UNSET_VALUE
         @env = UNSET_VALUE
+        @env_mode = UNSET_VALUE
+        @env_owner = UNSET_VALUE
         @env_path = UNSET_VALUE
         @installer_url = UNSET_VALUE
       end
@@ -83,8 +107,12 @@ module VagrantPlugins
       def finalize!
         @args = [] if @args == UNSET_VALUE
         @config = "" if @config == UNSET_VALUE
-        @config_path = DEFAULT_CONFIG_PATH if @config_path == UNSET_VALUE
+        @config_mode = @config_mode == UNSET_VALUE ? DEFAULT_CONFIG_MODE : @config_mode.to_s
+        @config_owner = @config_owner == UNSET_VALUE ? DEFAULT_CONFIG_OWNER : @config_owner.to_s
+        @config_path = @config_path == UNSET_VALUE ? DEFAULT_CONFIG_PATH : @config_path.to_s
         @env = [] if @env == UNSET_VALUE
+        @env_mode = DEFAULT_ENV_MODE if @env_mode == UNSET_VALUE
+        @env_owner = DEFAULT_ENV_OWNER if @env_owner == UNSET_VALUE
         @env_path = DEFAULT_ENV_PATH if @env_path == UNSET_VALUE
         @installer_url = DEFAULT_INSTALLER_URL if @installer_url == UNSET_VALUE
 

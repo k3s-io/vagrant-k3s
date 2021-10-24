@@ -28,7 +28,7 @@ GIT
 PATH
   remote: .
   specs:
-    vagrant-k3s (0.1.1)
+    vagrant-k3s (0.1.2)
 
 GEM
   remote: https://rubygems.org/
@@ -43,8 +43,32 @@ GEM
     dotenv-deployment (0.0.2)
     ed25519 (1.2.4)
     erubi (1.10.0)
-    excon (0.86.0)
+    excon (0.87.0)
+    faraday (1.8.0)
+      faraday-em_http (~> 1.0)
+      faraday-em_synchrony (~> 1.0)
+      faraday-excon (~> 1.1)
+      faraday-httpclient (~> 1.0.1)
+      faraday-net_http (~> 1.0)
+      faraday-net_http_persistent (~> 1.1)
+      faraday-patron (~> 1.0)
+      faraday-rack (~> 1.0)
+      multipart-post (>= 1.2, < 3)
+      ruby2_keywords (>= 0.0.4)
+    faraday-em_http (1.0.0)
+    faraday-em_synchrony (1.0.0)
+    faraday-excon (1.1.0)
+    faraday-httpclient (1.0.1)
+    faraday-net_http (1.0.1)
+    faraday-net_http_persistent (1.2.0)
+    faraday-patron (1.0.0)
+    faraday-rack (1.0.0)
     ffi (1.15.4)
+    fog-aws (3.12.0)
+      fog-core (~> 2.1)
+      fog-json (~> 1.1)
+      fog-xml (~> 0.1)
+      ipaddress (~> 0.8)
     fog-core (2.2.4)
       builder
       excon (~> 0.71)
@@ -71,7 +95,9 @@ GEM
     httpclient (2.8.3)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
-    json (2.5.1)
+    iniparse (1.5.0)
+    ipaddress (0.8.3)
+    json (2.6.1)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -84,6 +110,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2021.0901)
     multi_json (1.15.0)
+    multipart-post (2.1.1)
     net-scp (3.0.0)
       net-ssh (>= 2.6.5, < 7.0.0)
     net-sftp (3.0.0)
@@ -92,7 +119,7 @@ GEM
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     nori (2.6.0)
-    racc (1.5.2)
+    racc (1.6.0)
     rake (13.0.6)
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
@@ -114,11 +141,19 @@ GEM
       rspec-support (~> 3.10.0)
     rspec-support (3.10.2)
     ruby-libvirt (0.7.1)
+    ruby2_keywords (0.0.5)
     rubyntlm (0.6.3)
     rubyzip (2.3.2)
+    vagrant-aws (0.7.2)
+      fog-aws (~> 3.12.0)
+      iniparse (~> 1.4, >= 1.4.2)
+    vagrant-digitalocean (0.9.5)
+      faraday (>= 0.8.6)
+      json
+      log4r
     vagrant-env (0.0.3)
       dotenv (~> 0.9)
-    vagrant-libvirt (0.5.3)
+    vagrant-libvirt (0.6.3)
       fog-core (~> 2.1)
       fog-libvirt (>= 0.6.0)
       nokogiri (~> 1.6)
@@ -157,6 +192,8 @@ DEPENDENCIES
   rake (~> 13.0)
   rspec (~> 3.10.0)
   vagrant!
+  vagrant-aws
+  vagrant-digitalocean
   vagrant-env
   vagrant-k3s!
   vagrant-libvirt

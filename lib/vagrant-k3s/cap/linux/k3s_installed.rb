@@ -5,13 +5,10 @@ module VagrantPlugins
     module Cap
       module Linux
         module K3sInstalled
-          # Check if K3s is installed at the given version.
+          # Check if K3s is installed.
           # @return [true, false]
-          def self.k3s_installed(machine, k3s="k3s")
-            machine.communicate.execute("/usr/bin/which k3s") do |type, data|
-              k3s = data.to_s if type == :stdout
-            end
-            machine.communicate.test("#{k3s} --version", sudo: true)
+          def self.k3s_installed(machine)
+            machine.communicate.test("which k3s", sudo: true)
           end
         end
       end
