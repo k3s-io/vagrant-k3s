@@ -15,6 +15,7 @@ module VagrantPlugins
       end
 
       def configure(root_config)
+        @logger.debug root_config.inspect
       end
 
       def cleanup
@@ -68,7 +69,7 @@ module VagrantPlugins
         EOF
         outputs, handler = build_outputs
         begin
-          @machine.communicate.sudo("sh #{install_sh}", error_key: :ssh_bad_exit_status_muted, &handler)
+          @machine.communicate.sudo("chmod +x #{install_sh} && #{install_sh}", error_key: :ssh_bad_exit_status_muted, &handler)
         ensure
           outputs.values.map(&:close)
         end
