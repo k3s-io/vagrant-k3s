@@ -3,16 +3,18 @@
 module VagrantPlugins
   module K3s
     class Config < Vagrant.plugin(2, :config)
-      DEFAULT_CONFIG_MODE = "0600".freeze
-      DEFAULT_CONFIG_OWNER = "root:root".freeze
-      DEFAULT_CONFIG_PATH = "/etc/rancher/k3s/config.yaml".freeze
-      DEFAULT_ENV_MODE = "0600".freeze
-      DEFAULT_ENV_OWNER = "root:root".freeze
-      DEFAULT_ENV_PATH = "/etc/rancher/k3s/install.env".freeze
-      DEFAULT_INSTALLER_URL = "https://get.k3s.io".freeze
+      DEFAULT_FILE_MODE = '0600'
+      DEFAULT_FILE_OWNER = 'root:root'
+      DEFAULT_CONFIG_MODE = DEFAULT_FILE_MODE
+      DEFAULT_CONFIG_OWNER = DEFAULT_FILE_OWNER
+      DEFAULT_CONFIG_PATH = '/etc/rancher/k3s/config.yaml'
+      DEFAULT_ENV_MODE = DEFAULT_FILE_MODE
+      DEFAULT_ENV_OWNER = DEFAULT_FILE_OWNER
+      DEFAULT_ENV_PATH = '/etc/rancher/k3s/install.env'
+      DEFAULT_INSTALLER_URL = 'https://get.k3s.io'
 
       # string or array
-      # @return [Array<String]
+      # @return [Array<String>]
       attr_accessor :args
 
       # string (.yaml) or hash

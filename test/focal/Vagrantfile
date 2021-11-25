@@ -28,7 +28,7 @@ Vagrant.configure("2") do |config|
   # turn off this noise, we don't need it
   config.vm.synced_folder '.', '/vagrant', disabled: true
 
-  %w[hyperv libvirt virtualbox vmware_desktop].each do |p|
+  %w[libvirt virtualbox vmware_desktop].each do |p|
     config.vm.provider p do |v|
       v.cpus = ENV['CPUS'] || 2         # k3s behaves much better with 2 cpu
       v.memory = ENV['MEMORY'] || 2048  # the memory helps dnf/yum evade the oom-killer sans swap
