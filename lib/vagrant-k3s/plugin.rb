@@ -28,6 +28,11 @@ module VagrantPlugins
         Cap::Linux::K3sInstalled
       end
 
+      guest_capability(:linux, :k3s_kubectl) do
+        require_relative "cap/linux/k3s_kubectl"
+        Cap::Linux::K3sKubectl
+      end
+
       guest_capability(:linux, :curl_installed) do
         require_relative "cap/linux/curl_installed"
         Cap::Linux::CurlInstalled
