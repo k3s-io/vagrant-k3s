@@ -8,11 +8,8 @@ end
 
 group :plugins do
   gemspec
-  gem "vagrant-aws"
-  gem "vagrant-digitalocean"
-  gem "vagrant-env"
-  gem "vagrant-libvirt"
-  gem "vagrant-reload"
-  gem "vagrant-timezone"
-  gem "vagrant-vmware-desktop"
+  # gem "vagrant-libvirt"
+  # gem "vagrant-reload"
+  # gem "vagrant-timezone"
+  # gem "vagrant-vmware-desktop"
 end
