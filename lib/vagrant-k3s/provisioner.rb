@@ -14,12 +14,11 @@ module VagrantPlugins
         @logger = Log4r::Logger.new("vagrant::provisioners::k3s")
       end
 
-      def configure(root_config)
-        @logger.debug root_config.inspect
-      end
+      # def configure(root)
+      # end
 
-      def cleanup
-      end
+      # def cleanup
+      # end
 
       def provision
         args = ""
@@ -30,34 +29,32 @@ module VagrantPlugins
           args = " #{args.join(" ")}"
         end
 
-        @machine.ui.info 'Installing K3s ...'
-
         unless @machine.guest.capability(:curl_installed)
+          @machine.ui.info 'Installing Curl ...'
           @machine.guest.capability(:curl_install)
         end
 
-        config_file = config.config_path.to_s
-        config_yaml = config.config.is_a?(String) ? config.config : stringify_keys(config.config).to_yaml
-        with_file_upload "k3s-config.yaml".freeze, config_file, config_yaml
+        cfg_file = config.config_path.to_s
+        cfg_yaml = config.config.is_a?(String) ? config.config : stringify_keys(config.config).to_yaml
+        file_upload "k3s-config.yaml", cfg_file, cfg_yaml
 
-        install_env_file = config.env_path.to_s
-        install_env_text = ""
+        env_file = config.env_path.to_s
+        env_text = ""
         if config.env.is_a?(String)
-          install_env_text = config.env.to_s
+          env_text = config.env.to_s
         end
         if config.env.is_a?(Array)
-          config.env.each {|line| install_env_text << "#{line.to_s}\n"}
+          config.env.each {|line| env_text << "#{line.to_s}\n"}
         end
         if config.env.is_a?(Hash)
-          config.env.each {|key,value| install_env_text << "#{key.to_s}=#{quote_and_escape(value.to_s)}\n"}
+          config.env.each {|key,value| env_text << "#{key.to_s}=#{quote_and_escape(value.to_s)}\n"}
         end
-        with_file_upload "k3s-install.env".freeze, install_env_file, install_env_text
+        file_upload "k3s-install.env", env_file, env_text
 
-        install_sh = "/tmp/vagrant-k3s-provisioner-install.sh".freeze
-        with_file_upload "k3s-install.sh", install_sh, <<~EOF
+        prv_file = "/vagrant/k3s-provisioner.sh"
+        prv_text = <<~EOF
           #/usr/bin/env bash
           set -eu -o pipefail
-          mkdir -m 0755 -p $(dirname #{config.config_path}) $(dirname #{config.env_path})
           chown #{config.config_owner} #{config.config_path}
           chmod #{config.config_mode} #{config.config_path}
           chown #{config.env_owner} #{config.env_path}
@@ -65,11 +62,14 @@ module VagrantPlugins
           set -o allexport
           source #{config.env_path}
           set +o allexport
-          curl -fsL #{config.installer_url} | sh -s - #{args}
+          curl -fsL '#{config.installer_url}' | sh -s - #{args}
         EOF
+        file_upload("k3s-install.sh", prv_file, prv_text)
+        @machine.ui.info "Invoking: #{prv_file}"
+
         outputs, handler = build_outputs
         begin
-          @machine.communicate.sudo("chmod +x #{install_sh} && #{install_sh}", error_key: :ssh_bad_exit_status_muted, &handler)
+          @machine.communicate.sudo("chmod +x #{prv_file} && #{prv_file}", error_key: :ssh_bad_exit_status_muted, &handler)
         ensure
           outputs.values.map(&:close)
         end
@@ -85,7 +85,7 @@ module VagrantPlugins
         else
           outputs, handler = build_outputs
           begin
-            @machine.communicate.execute("#{exe} --version", :error_key => :ssh_bad_exit_status_muted, &handler)
+            @machine.communicate.sudo("#{exe} --version", :error_key => :ssh_bad_exit_status_muted, &handler)
           ensure
             outputs.values.map(&:close)
           end
@@ -114,7 +114,7 @@ module VagrantPlugins
         end
       end
 
-      def with_file(name='vagrant-k3s-provisioner', content)
+      def with_file(name, content)
         file = Tempfile.new([name])
         file.binmode
         begin
@@ -128,14 +128,17 @@ module VagrantPlugins
         end
       end
 
-      def with_file_upload(name='vagrant-k3s-provisioner', to, content)
-        with_file(name, content) do |from|
-          tmpdir = @machine.guest.capability :create_tmp_path, {:type => :directory}
-          tmpfile = [tmpdir, File.basename(to)].join('/')
-          @machine.communicate.upload(from, tmpfile)
-          @machine.communicate.sudo("mkdir -m 0755 -p #{File.dirname(to)} && mv -f #{tmpfile} #{to}")
+      def file_upload(local_file, remote_path, content)
+        with_file(local_file, content) do |local_path|
+          remote_tmp_dir = @machine.guest.capability :create_tmp_path, {:type => :directory}
+          remote_tmp_path = [remote_tmp_dir, File.basename(remote_path)].join('/')
+          @machine.communicate.upload(local_path, remote_tmp_path)
+          @machine.communicate.sudo("install -v -DTZ #{remote_tmp_path} #{remote_path}") do |type, line|
+            @machine.ui.info line.chomp, :color => {:stderr => :red, :stdout => :default}[type]
+          end
         end
-        to
+        @machine.ui.detail content.chomp, :color => :yellow
+        remote_path
       end
 
       def quote_and_escape(text, quote = '"')
