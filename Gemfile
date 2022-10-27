@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 group :development do
-  gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git', tag: "v2.2.18"
+  gem 'vagrant', git: 'https://github.com/hashicorp/vagrant.git', tag: "v2.3.2"
 end
 
 group :plugins do
@@ -13,3 +13,5 @@ group :plugins do
   # gem "vagrant-timezone"
   # gem "vagrant-vmware-desktop"
 end
+
+gem "net-ssh", "~> 6.1"
