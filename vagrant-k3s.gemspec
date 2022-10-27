@@ -6,14 +6,14 @@ Gem::Specification.new do |spec|
   spec.name         = 'vagrant-k3s'
   spec.version      = VagrantPlugins::K3s::VERSION
   spec.platform     = Gem::Platform::RUBY
-  spec.authors      = ['Jacob Blain Christen']
-  spec.email        = ['dweomer5@gmail.com']
+  spec.authors      = ['Jacob Blain Christen', 'Derek Nola']
+  spec.email        = ['dweomer5@gmail.com', 'derek.nola@suse.com']
 
   spec.license      = 'Apache 2.0'
 
   spec.summary      = 'Manage k3s installations on Vagrant guests.'
   spec.description  = spec.summary
-  spec.homepage     = 'https://github.com/dweomer/vagrant-k3s'
+  spec.homepage     = 'https://github.com/k3s-io/vagrant-k3s'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
