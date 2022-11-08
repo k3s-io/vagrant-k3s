@@ -51,6 +51,11 @@ module VagrantPlugins
         end
         file_upload "k3s-install.env", env_file, env_text
 
+        skip_env = ""
+        if config.skip_start
+          skip_env = "INSTALL_K3S_SKIP_ENABLE=true"
+        end
+        
         prv_file = "/vagrant/k3s-provisioner.sh"
         prv_text = <<~EOF
           #/usr/bin/env bash
@@ -62,7 +67,7 @@ module VagrantPlugins
           set -o allexport
           source #{config.env_path}
           set +o allexport
-          curl -fsL '#{config.installer_url}' | sh -s - #{args}
+          curl -fsL '#{config.installer_url}' | #{skip_env} sh -s - #{args}
         EOF
         file_upload("k3s-install.sh", prv_file, prv_text)
         @machine.ui.info "Invoking: #{prv_file}"

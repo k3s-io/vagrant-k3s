@@ -53,6 +53,10 @@ module VagrantPlugins
       # @return [String]
       attr_accessor :installer_url
 
+      # Defaults to false
+      # @return [Boolean]
+      attr_accessor :skip_start
+
       # # INSTALL_K3S_BIN_DIR
       # # @return [String]
       # attr_accessor :install_bin_dir
@@ -104,6 +108,7 @@ module VagrantPlugins
         @env_owner = UNSET_VALUE
         @env_path = UNSET_VALUE
         @installer_url = UNSET_VALUE
+        @skip_start = UNSET_VALUE
       end
 
       def finalize!
@@ -117,6 +122,7 @@ module VagrantPlugins
         @env_owner = DEFAULT_ENV_OWNER if @env_owner == UNSET_VALUE
         @env_path = DEFAULT_ENV_PATH if @env_path == UNSET_VALUE
         @installer_url = DEFAULT_INSTALLER_URL if @installer_url == UNSET_VALUE
+        @skip_start = false if @skip_start == UNSET_VALUE
 
         if @args && args_valid?
           @args = @args.is_a?(Array) ? @args.map { |a| a.to_s } : @args.to_s
