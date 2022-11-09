@@ -69,6 +69,11 @@ Vagrant.configure("2") do |config|
     #   k3s.args = '--config=/some/other/config.yaml'
     # default => `/etc/rancher/k3s/config.yaml`
     k3s.config_path = '/etc/rancher/k3s/config.yaml'
+
+    # skip_start: install but don't start K3s
+    # type => Boolean
+    # default => false
+    k3s.skip_start = true
   end
 end
 
@@ -76,11 +81,13 @@ end
 ## Development
 
 See https://www.vagrantup.com/docs/plugins/development-basics
+- `gem build`
+- `VAGRANT_CWD=./test/ubuntu bundle exec vagrant up`
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/dweomer/vagrant-k3s. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/dweomer/vagrant-k3s/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome on GitHub at https://github.com/k3s-io/vagrant-k3s.
 
 ## Code of Conduct
 
-Everyone interacting in the Vagrant::K3s project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/dweomer/vagrant-k3s/blob/master/CODE_OF_CONDUCT.md).
+This project is intended to be a safe, welcoming space for collaboration. Everyone interacting in the vagrant-k3s projects codebase is expected to adhere to the [code of conduct](CODE_OF_CONDUCT.md).

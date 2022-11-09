@@ -8,8 +8,6 @@ end
 
 group :plugins do
   gemspec
-  # gem "vagrant-libvirt"
   # gem "vagrant-reload"
   # gem "vagrant-timezone"
-  # gem "vagrant-vmware-desktop"
 end

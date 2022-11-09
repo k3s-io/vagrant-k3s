@@ -11,17 +11,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        ruby:
-          - 2.7.0
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
+        ruby-version: "3.0.2"
+    - name: Setup bundle
+      run: bundle update && bundle install
     - name: Run the default task
       run: bundle exec rake

@@ -7,7 +7,7 @@ ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'virtualbox'
 Vagrant.configure("2") do |config|
   # the vm.define mullet: business up front, party in the back (below)
   config.vm.define 'vagrant-k3s-test', primary: true do |node|
-    node.vm.box = 'ubuntu/focal64'
+    node.vm.box = 'generic/ubuntu2004'
     node.vm.hostname = 'vagrant'
     node.vm.provision :k3s, run: "once" do |k3s|
       k3s.args = %w[server]
@@ -22,6 +22,7 @@ Vagrant.configure("2") do |config|
         :disable => %w[local-storage metrics-server servicelb traefik],
         'disable-network-policy' => true,
       }
+      k3s.skip_start = true
     end
   end
 
