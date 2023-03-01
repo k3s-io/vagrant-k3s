@@ -9,6 +9,11 @@ Vagrant.configure("2") do |config|
   config.vm.define 'vagrant-k3s-test', primary: true do |node|
     node.vm.box = 'dweomer/centos-8.4-amd64'
     node.vm.hostname = 'vagrant'
+    # deal with the repo due to the EOL of centos-8
+    node.vm.provision :shell, :inline => "
+      sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
+      sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+    "
     node.vm.provision :k3s, run: "once" do |k3s|
       k3s.args = %w[server --selinux]
       k3s.env = %w[

@@ -12,6 +12,11 @@ vagrant up --provider=<your favorite provider>
 ```ruby
 Vagrant.configure("2") do |config|
   config.vm.box = "dweomer/centos-8.4-amd64"
+  # deal with the repo due to the EOL of centos-8
+  config.vm.provision :shell, :inline => "
+    sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+  "
   config.vm.provision :k3s, run: "once" do |k3s|
     # installer_url: can be anything that curl can access from the guest
     # default =>`https://get.k3s.io`
