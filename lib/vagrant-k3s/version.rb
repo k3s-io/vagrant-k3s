@@ -2,6 +2,6 @@
 
 module VagrantPlugins
   module K3s
-    VERSION = '0.1.5'
+    VERSION = '0.1.6'
   end
 end
