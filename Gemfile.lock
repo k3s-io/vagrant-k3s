@@ -48,9 +48,17 @@ GEM
     erubi (1.12.0)
     excon (0.99.0)
     ffi (1.15.5)
+    google-protobuf (3.22.2-arm64-darwin)
+    google-protobuf (3.22.2-x86_64-darwin)
     google-protobuf (3.22.2-x86_64-linux)
     googleapis-common-protos-types (1.5.0)
       google-protobuf (~> 3.14)
+    grpc (1.52.0)
+      google-protobuf (~> 3.21)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.52.0-x86_64-darwin)
+      google-protobuf (~> 3.21)
+      googleapis-common-protos-types (~> 1.0)
     grpc (1.52.0-x86_64-linux)
       google-protobuf (~> 3.21)
       googleapis-common-protos-types (~> 1.0)
@@ -143,6 +151,8 @@ GEM
       winrm (~> 2.0)
 
 PLATFORMS
+  arm64-darwin-22
+  x86_64-darwin-20
   x86_64-linux
 
 DEPENDENCIES
