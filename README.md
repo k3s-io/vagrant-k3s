@@ -86,9 +86,13 @@ end
 ## Development
 
 See https://www.vagrantup.com/docs/plugins/development-basics
+To update dependencies and gemfile:
+- `bundle install`
+To build and test new gem:
 - `gem build`
 - `VAGRANT_CWD=./test/ubuntu bundle exec vagrant up`
-
+To publish:
+- `gem push vagrant-k3s-<version>.gem`
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/k3s-io/vagrant-k3s.
