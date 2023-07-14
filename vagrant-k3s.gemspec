@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
 
-  spec.required_ruby_version     = ">= 3.0", "< 3.3"
+  spec.required_ruby_version     = ">= 2.7", "< 3.3"
   spec.required_rubygems_version = ">= 1.3.6"
 
   spec.add_development_dependency "rake", "~> 13.0"
