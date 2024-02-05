@@ -79,6 +79,18 @@ module VagrantPlugins
           outputs.values.map(&:close)
         end
 
+        if not config.skip_complete
+          outputs, handler = build_outputs
+          begin
+            @machine.ui.info 'Enabling K3s autocompletion ...'
+            @machine.communicate.sudo("k3s completion -i bash", error_key: :ssh_bad_exit_status_muted, &handler)
+          rescue Vagrant::Errors::VagrantError => e
+            @machine.ui.detail "#{e.extra_data[:stderr].chomp}", :color => :yellow
+          ensure
+            outputs.values.map(&:close)
+          end
+        end
+
         begin
           exe = "k3s"
           @machine.ui.info 'Checking the K3s version ...'
