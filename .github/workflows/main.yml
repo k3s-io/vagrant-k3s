@@ -16,7 +16,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: "3.0.2"
+        ruby-version: "3.3"
     - name: Setup bundle
       run: bundle update && bundle install
     - name: Run the default task

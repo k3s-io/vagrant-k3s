@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 ENV['VAGRANT_I_KNOW_WHAT_IM_DOING_PLEASE_BE_QUIET'] = 'true'
-ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'virtualbox'
+ENV['VAGRANT_DEFAULT_PROVIDER'] ||= 'libvirt'
 
 Vagrant.configure("2") do |config|
   # the vm.define mullet: business up front, party in the back (below)
