@@ -51,7 +51,7 @@ module VagrantPlugins
 
         skip_env = ""
         if config.skip_start
-          skip_env = "INSTALL_K3S_SKIP_ENABLE=true"
+          skip_env = "INSTALL_K3S_SKIP_ENABLE=true INSTALL_K3S_SKIP_START=true"
         end
         
         prv_file = "/vagrant/k3s-provisioner.sh"
@@ -81,7 +81,7 @@ module VagrantPlugins
           outputs, handler = build_outputs
           begin
             @machine.ui.info 'Enabling K3s autocompletion ...'
-            @machine.communicate.sudo("k3s completion -i bash", error_key: :ssh_bad_exit_status_muted, &handler)
+            @machine.communicate.sudo("k3s completion bash -i", error_key: :ssh_bad_exit_status_muted, &handler)
           rescue Vagrant::Errors::VagrantError => e
             @machine.ui.detail "#{e.extra_data[:stderr].chomp}", :color => :yellow
           ensure
