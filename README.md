@@ -75,6 +75,40 @@ Vagrant.configure("2") do |config|
     # default => `/etc/rancher/k3s/config.yaml`
     k3s.config_path = '/etc/rancher/k3s/config.yaml'
 
+    # registries: private registry configuration content in yaml
+    # see https://docs.k3s.io/installation/private-registry
+    # type => String || Hash
+    k3s.registries = {
+      :mirrors => {
+        'docker.io' => {
+          :endpoint => %w[https://registry.example.com:5000]
+        }
+      }
+    }
+    # or
+    k3s.registries = <<~YAML
+      mirrors:
+        docker.io:
+          endpoint:
+          - https://registry.example.com:5000
+      configs:
+        registry.example.com:5000:
+          auth:
+            username: user
+            password: secret
+    YAML
+    # registries_mode: registries file permissions
+    # type => String
+    # default => `0600`
+    k3s.registries_mode = '0600' # default
+    k3s.registries_owner = 'root:root' # default
+
+    # registries_path: where to write the registries yaml.
+    # if you override this be sure to let k3s know, e.g.
+    #   k3s.config = { 'private-registry' => '/some/other/registries.yaml' }
+    # default => `/etc/rancher/k3s/registries.yaml`
+    k3s.registries_path = '/etc/rancher/k3s/registries.yaml'
+
     # skip_start: install but don't start K3s
     # type => Boolean
     # default => false

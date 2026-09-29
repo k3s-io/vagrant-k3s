@@ -2,6 +2,7 @@
 
 require 'vagrant'
 require 'vagrant/errors'
+require 'json'
 require 'yaml'
 
 module VagrantPlugins
@@ -36,6 +37,10 @@ module VagrantPlugins
         cfg_yaml = config.config.is_a?(String) ? config.config : config.config.transform_keys(&:to_s).to_yaml
         file_upload "k3s-config.yaml", cfg_file, cfg_yaml
 
+        reg_file = config.registries_path.to_s
+        reg_yaml = config.registries.is_a?(String) ? config.registries : JSON.parse(config.registries.to_json).to_yaml
+        file_upload "k3s-registries.yaml", reg_file, reg_yaml
+
         env_file = config.env_path.to_s
         env_text = ""
         if config.env.is_a?(String)
@@ -62,6 +67,8 @@ module VagrantPlugins
           chmod #{config.config_mode} #{config.config_path}
           chown #{config.env_owner} #{config.env_path}
           chmod #{config.env_mode} #{config.env_path}
+          chown #{config.registries_owner} #{config.registries_path}
+          chmod #{config.registries_mode} #{config.registries_path}
           set -o allexport
           source #{config.env_path}
           set +o allexport

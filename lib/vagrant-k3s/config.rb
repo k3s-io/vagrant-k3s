@@ -12,6 +12,9 @@ module VagrantPlugins
       DEFAULT_ENV_OWNER = DEFAULT_FILE_OWNER
       DEFAULT_ENV_PATH = '/etc/rancher/k3s/install.env'
       DEFAULT_INSTALLER_URL = 'https://get.k3s.io'
+      DEFAULT_REGISTRIES_MODE = DEFAULT_FILE_MODE
+      DEFAULT_REGISTRIES_OWNER = DEFAULT_FILE_OWNER
+      DEFAULT_REGISTRIES_PATH = '/etc/rancher/k3s/registries.yaml'
 
       # string or array
       # @return [Array<String>]
@@ -52,6 +55,22 @@ module VagrantPlugins
       # Defaults to `https://get.k3s.io`
       # @return [String]
       attr_accessor :installer_url
+
+      # string (.yaml) or hash
+      # @return [Hash]
+      attr_accessor :registries
+
+      # Defaults to `0600`
+      # @return [String]
+      attr_accessor :registries_mode
+
+      # Defaults to `root:root`
+      # @return [String]
+      attr_accessor :registries_owner
+
+      # Defaults to `/etc/rancher/k3s/registries.yaml`
+      # @return [String]
+      attr_accessor :registries_path
 
       # Defaults to false
       # @return [Boolean]
@@ -112,6 +131,10 @@ module VagrantPlugins
         @env_owner = UNSET_VALUE
         @env_path = UNSET_VALUE
         @installer_url = UNSET_VALUE
+        @registries = UNSET_VALUE
+        @registries_mode = UNSET_VALUE
+        @registries_owner = UNSET_VALUE
+        @registries_path = UNSET_VALUE
         @skip_start = UNSET_VALUE
         @skip_complete = UNSET_VALUE
       end
@@ -127,6 +150,10 @@ module VagrantPlugins
         @env_owner = DEFAULT_ENV_OWNER if @env_owner == UNSET_VALUE
         @env_path = DEFAULT_ENV_PATH if @env_path == UNSET_VALUE
         @installer_url = DEFAULT_INSTALLER_URL if @installer_url == UNSET_VALUE
+        @registries = "" if @registries == UNSET_VALUE
+        @registries_mode = @registries_mode == UNSET_VALUE ? DEFAULT_REGISTRIES_MODE : @registries_mode.to_s
+        @registries_owner = @registries_owner == UNSET_VALUE ? DEFAULT_REGISTRIES_OWNER : @registries_owner.to_s
+        @registries_path = @registries_path == UNSET_VALUE ? DEFAULT_REGISTRIES_PATH : @registries_path.to_s
         @skip_start = false if @skip_start == UNSET_VALUE
         @skip_complete = false if @skip_complete == UNSET_VALUE
 
@@ -150,6 +177,10 @@ module VagrantPlugins
           errors << "K3s provisioner `env` must be an array, hash, or string."
         end
 
+        unless registries_valid?
+          errors << "K3s provisioner `registries` must be a hash or string (yaml)."
+        end
+
         { "k3s provisioner" => errors }
       end
 
@@ -170,6 +201,13 @@ module VagrantPlugins
         return true unless args
         return true if config.is_a?(String)
         return true if config.is_a?(Hash)
+        false
+      end
+
+      def registries_valid?
+        return true unless registries
+        return true if registries.is_a?(String)
+        return true if registries.is_a?(Hash)
         false
       end
 
